@@ -17,7 +17,7 @@ def geo(message):
 	keyboard.add(button_geo)
 	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
 
-@bot.message_handler(commands=["exel"])
+@bot.message_handler(commands=["excel"])
 def exel(message):
 	print(message.chat.id)
 	if message.chat.id in config.ADMINS:
@@ -29,7 +29,7 @@ def exel(message):
 	else:
 		bot.delete_message(message.chat.id, message.message_id)
 
-@bot.message_handler(commands=["clearexel"])
+@bot.message_handler(commands=["clearexcel"])
 def exel(message):
 	print(message.chat.id)
 	if message.chat.id in config.ADMINS:
@@ -62,7 +62,7 @@ def location(message):
 			bot.send_message(message.chat.id, 'Вы опоздали')
 			bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
 		elif callback == 'good':
-			bot.send_message(message.chat.id, 'Все отлично, хорошего дня')
+			bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
 		else:
 			bot.send_message(message.chat.id, 'Что то пошло не так')
 
