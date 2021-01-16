@@ -10,7 +10,7 @@ from openpyxl.styles import PatternFill#Connect cell styles
 COORDS = (55.670425, 37.551452)
 EARTH_RADIUS = 6372795
 
-RADIUS = 100
+RADIUS = 200
 
 ADMINS = (506563771, 687626552, 195614754, 366276154)
 
