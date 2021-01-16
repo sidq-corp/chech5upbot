@@ -55,7 +55,7 @@ def location(message):
 		callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
 
 		if callback == 'errad':
-			bot.send_message(message.chat.id, 'Отправьте геопозицию еще раз')
+			bot.send_message(message.chat.id, 'Вы очень далеко от ТЦ')
 		elif callback == 'errtime-':
 			bot.send_message(message.chat.id, 'Вы пришли слишком рано')
 		elif callback == 'errtime+':
