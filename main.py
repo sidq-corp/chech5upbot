@@ -73,4 +73,9 @@ def location(message):
 
 
 if __name__ == '__main__':
-	bot.infinity_polling(True)
+	while 1:
+		try:
+			bot.polling(none_stop=True)
+		except:
+			pass
+	# bot.infinity_polling(True)
