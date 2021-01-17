@@ -83,13 +83,13 @@ def good_add(name, color):
 				data[i][j] = '0000ff'
 
 
-	print(data)
 
 	date = datetime.now()
 	date = date.date()
 
-	print(date)
 
+	print(data)
+	print(str(date))
 	if len(data) == 0:
 		data.append(['0000ff' for x in names])
 		data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
@@ -98,7 +98,11 @@ def good_add(name, color):
 	else:
 
 		if data[-1][0] == str(date):
-			data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
+			
+			if data[-1][names.index(name)] == '0000ff00':
+				return 'green'
+
+			data[-1][names.index(name)] = '00ff00' if color == 'green' or data[-1][names.index(name)] == '' else 'ff0000'
 		else:
 			data.append(['0000ff' for x in names])
 			data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
@@ -140,7 +144,8 @@ def add_coords(name, lat1, long1):
 			return 'good'
 
 		elif time > TIME[1]:
-			good_add(name, 'red')
+			if good_add(name, 'red'):
+				return 'green'
 			return 'errtime+'
 
 		elif time < TIME[0]:

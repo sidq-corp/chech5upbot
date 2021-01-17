@@ -50,7 +50,6 @@ def exel(message):
 def location(message):
 	if message.location is not None:
 		
-		print(message)
 
 		callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
 
@@ -63,6 +62,8 @@ def location(message):
 			bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
 		elif callback == 'good':
 			bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
+		elif callback == 'green':
+			bot.send_message(message.chat.id, 'Вы уже отметились!')
 		else:
 			bot.send_message(message.chat.id, 'Что то пошло не так')
 
