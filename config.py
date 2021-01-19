@@ -3,9 +3,12 @@ from datetime import datetime
 
 from openpyxl import load_workbook
 
+from threading import Lock
 
 from openpyxl.styles import PatternFill#Connect cell styles
 
+
+lock = Lock()
 
 COORDS = (55.670425, 37.551452)
 EARTH_RADIUS = 6372795
@@ -51,76 +54,77 @@ def calc(lat1, long1):
 	return dist
 
 def good_add(name, color):
-	wb = load_workbook(filename='work.xlsx', data_only=True)
+	with lock:
+		wb = load_workbook(filename='work.xlsx', data_only=True)
 
-	w = wb.sheetnames
-	ws = wb[w[0]]
-
-
-	names = [x[0].value for x in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=1)]
-
-	data = []
+		w = wb.sheetnames
+		ws = wb[w[0]]
 
 
-	for i in range(2, ws.max_column+1):
-		datas = ws.iter_rows(min_row=1, max_row=len(names), min_col=i, max_col=i)
+		names = [x[0].value for x in ws.iter_rows(min_row=1, max_row=ws.max_row, min_col=1, max_col=1)]
 
-		datas = [x[0] for x in datas]
+		data = []
 
-		data.append([x.fill.start_color.index for x in datas])
-		
-		data[-1][0] = [x.value for x in datas][0]
 
-	if not name in names:
-		names.append(name)
+		for i in range(2, ws.max_column+1):
+			datas = ws.iter_rows(min_row=1, max_row=len(names), min_col=i, max_col=i)
+
+			datas = [x[0] for x in datas]
+
+			data.append([x.fill.start_color.index for x in datas])
+			
+			data[-1][0] = [x.value for x in datas][0]
+
+		if not name in names:
+			names.append(name)
+
+			for i in range(len(data)):
+				data[i].append('0000ff')
 
 		for i in range(len(data)):
-			data[i].append('0000ff')
-
-	for i in range(len(data)):
-		for j in range(len(data[i])):
-			if data[i][j] == '00000000':
-				data[i][j] = '0000ff'
+			for j in range(len(data[i])):
+				if data[i][j] == '00000000':
+					data[i][j] = '0000ff'
 
 
 
-	date = datetime.now()
-	date = date.date()
+		date = datetime.now()
+		date = date.date()
 
 
-	print(data)
-	print(str(date))
-	if len(data) == 0:
-		data.append(['0000ff' for x in names])
-		data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
-		data[-1][0] = str(date)
-
-	else:
-
-		if data[-1][0] == str(date):
-			
-			if data[-1][names.index(name)] == '0000ff00':
-				return 'green'
-
-			data[-1][names.index(name)] = '00ff00' if color == 'green' or data[-1][names.index(name)] == '' else 'ff0000'
-		else:
+		print(data)
+		print(str(date))
+		if len(data) == 0:
 			data.append(['0000ff' for x in names])
 			data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
 			data[-1][0] = str(date)
 
-	for i in range(len(names)):
-		ws.cell(row = i + 1, column = 1).value = names[i]
+		else:
 
-	# print(data)
-	for i in range(len(data)):
-		for j in range(len(data[i])):
-			if j == 0:
-				ws.cell(row = j + 1, column = i + 2).value = data[i][j]
+			if data[-1][0] == str(date):
+				
+				if data[-1][names.index(name)] == '0000ff00':
+					return 'green'
+
+				data[-1][names.index(name)] = '00ff00' if color == 'green' or data[-1][names.index(name)] == '' else 'ff0000'
 			else:
-				# print(data[i][j])
-				ws.cell(row = j + 1, column = i + 2).fill =  PatternFill(fill_type='solid', start_color=data[i][j], end_color=data[i][j])
+				data.append(['0000ff' for x in names])
+				data[-1][names.index(name)] = '00ff00' if color == 'green' else 'ff0000'
+				data[-1][0] = str(date)
 
-	wb.save('work.xlsx')
+		for i in range(len(names)):
+			ws.cell(row = i + 1, column = 1).value = names[i]
+
+		# print(data)
+		for i in range(len(data)):
+			for j in range(len(data[i])):
+				if j == 0:
+					ws.cell(row = j + 1, column = i + 2).value = data[i][j]
+				else:
+					# print(data[i][j])
+					ws.cell(row = j + 1, column = i + 2).fill =  PatternFill(fill_type='solid', start_color=data[i][j], end_color=data[i][j])
+
+		wb.save('work.xlsx')
 
 
 def add_coords(name, lat1, long1):
