@@ -3,19 +3,24 @@ from telebot import types
 import config
 
 from threading import Thread
+from time import time
 
 token = "1505673717:AAGbj_khs5di7W9_t1Kg5ljac0-aixdXqGg"
 chat = '-1001489902826'
 
 bot = telebot.TeleBot(token)
 
+temp = dict()
 
-@bot.message_handler(commands=["start"])
+@bot.message_handler(commands=["start", "geo"])
 def geo(message):
 	keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 	button_geo = types.KeyboardButton(text="Я на месте", request_location=True)
 	keyboard.add(button_geo)
-	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение", reply_markup=keyboard)
+	temp.update({message.chat.id: time()})
+	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение, у тебя 3 секунды", reply_markup=keyboard)
+
+
 
 @bot.message_handler(commands=["excel"])
 def exel(message):
@@ -49,29 +54,40 @@ def exel(message):
 @bot.message_handler(content_types=["location"])
 def location(message):
 	if message.location is not None:
+		if message.chat.id in temp.keys():
+			st = temp[message.chat.id]
+
+			if time() - st > 3:
+				bot.send_message(message.chat.id, 'Вы не успели')
+				temp.pop(message.chat.id)
+			else:	
+
+				callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
+
+				if callback == 'errad':
+					bot.send_message(message.chat.id, 'Вы очень далеко от ТЦ')
+				elif callback == 'errtime-':
+					bot.send_message(message.chat.id, 'Вы пришли слишком рано')
+				elif callback == 'errtime+':
+					bot.send_message(message.chat.id, 'Вы опоздали')
+					bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
+				elif callback == 'good':
+					bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
+				elif callback == 'green':
+					bot.send_message(message.chat.id, 'Вы уже отметились!')
+				else:
+					bot.send_message(message.chat.id, 'Что то пошло не так')
+
 		
-
-		callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
-
-		if callback == 'errad':
-			bot.send_message(message.chat.id, 'Вы очень далеко от ТЦ')
-		elif callback == 'errtime-':
-			bot.send_message(message.chat.id, 'Вы пришли слишком рано')
-		elif callback == 'errtime+':
-			bot.send_message(message.chat.id, 'Вы опоздали')
-			bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
-		elif callback == 'good':
-			bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
-		elif callback == 'green':
-			bot.send_message(message.chat.id, 'Вы уже отметились!')
 		else:
-			bot.send_message(message.chat.id, 'Что то пошло не так')
+			bot.send_message(message.chat.id, 'Вы не успели')
 
 	else:
 
-		bot.send_message(message.chat.id, 'Отправьте геопозицию еще раз')
+		bot.send_message(message.chat.id, 'Попробуйте еще раз')
 
 
+bot.polling(none_stop=True)
 
 if __name__ == '__main__':
 	while 1:
