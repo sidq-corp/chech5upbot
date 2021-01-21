@@ -69,39 +69,42 @@ def get_dock(message):
 		bot.send_message(message.chat.id, 'ОШИБКА!')
 @bot.message_handler(content_types=["location"])
 def location(message):
-	if message.location is not None:
-		if message.chat.id in temp.keys():
-			st = temp[message.chat.id]
 
-			if time() - st > 4:
+	if not message.forward_from:
+		if message.location is not None:
+			if message.chat.id in temp.keys():
+				st = temp[message.chat.id]
+
+				if time() - st > 4:
+					bot.send_message(message.chat.id, 'Вы не успели')
+					temp.pop(message.chat.id)
+				else:	
+
+					callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
+
+					if callback == 'errad':
+						bot.send_message(message.chat.id, 'Вы очень далеко от ТЦ')
+					elif callback == 'errtime-':
+						bot.send_message(message.chat.id, 'Вы пришли слишком рано')
+					elif callback == 'errtime+':
+						bot.send_message(message.chat.id, 'Вы опоздали')
+						bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
+					elif callback == 'good':
+						bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
+					elif callback == 'green':
+						bot.send_message(message.chat.id, 'Вы уже отметились!')
+					else:
+						bot.send_message(message.chat.id, 'Что то пошло не так')
+
+			
+			else:
 				bot.send_message(message.chat.id, 'Вы не успели')
-				temp.pop(message.chat.id)
-			else:	
 
-				callback = config.add_coords(message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else ''), message.location.latitude, message.location.longitude)
-
-				if callback == 'errad':
-					bot.send_message(message.chat.id, 'Вы очень далеко от ТЦ')
-				elif callback == 'errtime-':
-					bot.send_message(message.chat.id, 'Вы пришли слишком рано')
-				elif callback == 'errtime+':
-					bot.send_message(message.chat.id, 'Вы опоздали')
-					bot.send_message(chat, message.chat.first_name + (' ' + str(message.chat.last_name) if message.chat.last_name else '') + ' опоздал!')
-				elif callback == 'good':
-					bot.send_message(message.chat.id, 'Красавчик, пришёл вовремя, сегодня твой день👍')
-				elif callback == 'green':
-					bot.send_message(message.chat.id, 'Вы уже отметились!')
-				else:
-					bot.send_message(message.chat.id, 'Что то пошло не так')
-
-		
 		else:
-			bot.send_message(message.chat.id, 'Вы не успели')
 
+			bot.send_message(message.chat.id, 'Попробуйте еще раз')
 	else:
-
-		bot.send_message(message.chat.id, 'Попробуйте еще раз')
-
+		bot.send_message(message.chat.id, 'Это пересланое сообщение')
 
 
 if __name__ == '__main__':
