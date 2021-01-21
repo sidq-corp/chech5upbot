@@ -7,7 +7,9 @@ from threading import Lock
 
 from openpyxl.styles import PatternFill#Connect cell styles
 
+from json import dump, load
 
+from random import randint
 lock = Lock()
 
 COORDS = (55.670425, 37.551452)
@@ -127,6 +129,26 @@ def good_add(name, color):
 		wb.save('work.xlsx')
 
 
+def add_to_base(lat1, long1):
+	with lock:
+		try:
+			with open('coord.json', 'r') as f:
+				data = load(f)
+		except:
+			data = []
+
+			if len(data) > 100:
+				data = []
+
+		if [lat1, long1] in data:
+			return 1
+		else:
+			data.append([lat1, long1])
+			with open('coord.json', 'w') as f:
+				dump(data, f)
+
+		return 0
+
 def add_coords(name, lat1, long1):
 
 	print(name)
@@ -142,16 +164,28 @@ def add_coords(name, lat1, long1):
 		return 'errad'
 
 	else:
-			
 		if time >= TIME[0] and time <= TIME[1]:
-			good_add(name, 'green')
-			return 'good'
+			if add_to_base(lat1, long1) or (not randint(0, 4)):
+
+				return 'coord'
+			else:
+				good_add(name, 'green')
+			
+
+				return 'good'
 
 		elif time > TIME[1]:
-			if good_add(name, 'red'):
-				return 'green'
+			if add_to_base(lat1, long1) or (not randint(0, 4)):
+				return 'coord'
+			else:
+				if good_add(name, 'red'):
+					
+					return 'green'
+
 			return 'errtime+'
 
 		elif time < TIME[0]:
 			return 'errtime-'
+
+
 
