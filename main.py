@@ -35,7 +35,7 @@ def exel(message):
 		bot.delete_message(message.chat.id, message.message_id)
 
 @bot.message_handler(commands=["clearexcel"])
-def exel(message):
+def clexel(message):
 	print(message.chat.id)
 	if message.chat.id in config.ADMINS:
 		
@@ -50,7 +50,23 @@ def exel(message):
 	else:
 		bot.delete_message(message.chat.id, message.message_id)
 
+@bot.message_handler(content_types=["document"])
+def get_dock(message):
+	try:
+		if message.chat.id in config.ADMINS:
+			bot.send_message(message.chat.id, 'Старый отчет:')
+			exel(message)
 
+			chat_id = message.chat.id
+			file_info = bot.get_file(message.document.file_id)
+			downloaded_file = bot.download_file(file_info.file_path)
+
+			with open('work.xlsx', 'wb') as f:
+				f.write(downloaded_file)
+
+			bot.send_message(message.chat.id, 'Все ок!')
+	except:
+		bot.send_message(message.chat.id, 'ОШИБКА!')
 @bot.message_handler(content_types=["location"])
 def location(message):
 	if message.location is not None:
