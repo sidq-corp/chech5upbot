@@ -18,7 +18,7 @@ def geo(message):
 	button_geo = types.KeyboardButton(text="Я на месте", request_location=True)
 	keyboard.add(button_geo)
 	temp.update({message.chat.id: time()})
-	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение, у тебя 3 секунды", reply_markup=keyboard)
+	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение, у тебя 4 секунды", reply_markup=keyboard)
 
 
 
@@ -57,7 +57,7 @@ def location(message):
 		if message.chat.id in temp.keys():
 			st = temp[message.chat.id]
 
-			if time() - st > 3:
+			if time() - st > 4:
 				bot.send_message(message.chat.id, 'Вы не успели')
 				temp.pop(message.chat.id)
 			else:	
