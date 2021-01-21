@@ -87,7 +87,6 @@ def location(message):
 		bot.send_message(message.chat.id, 'Попробуйте еще раз')
 
 
-bot.polling(none_stop=True)
 
 if __name__ == '__main__':
 	while 1:
