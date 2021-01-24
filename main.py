@@ -8,7 +8,7 @@ from time import time
 token = "1505673717:AAGbj_khs5di7W9_t1Kg5ljac0-aixdXqGg"
 chat = '-1001489902826'
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(token,  threaded=False)
 
 temp = dict()
 
