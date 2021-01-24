@@ -114,5 +114,6 @@ if __name__ == '__main__':
 		try:
 			bot.polling(none_stop=True)
 		except:
+			bot.stop_polling()
 			print('err')
 	# bot.infinity_polling(True)
