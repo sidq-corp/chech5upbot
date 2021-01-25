@@ -18,7 +18,7 @@ def geo(message):
 	button_geo = types.KeyboardButton(text="Я на месте", request_location=True)
 	keyboard.add(button_geo)
 	temp.update({message.chat.id: time()})
-	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение, у тебя 3 секунды", reply_markup=keyboard)
+	bot.send_message(message.chat.id, "Привет! Нажми на кнопку и передай мне свое местоположение, у тебя 6 секунд", reply_markup=keyboard)
 
 
 
@@ -50,23 +50,23 @@ def clexel(message):
 	else:
 		bot.delete_message(message.chat.id, message.message_id)
 
-@bot.message_handler(content_types=["document"])
-def get_dock(message):
-	try:
-		if message.chat.id in config.ADMINS:
-			bot.send_message(message.chat.id, 'Старый отчет:')
-			exel(message)
+# @bot.message_handler(content_types=["document"])
+# def get_dock(message):
+# 	try:
+# 		if message.chat.id in config.ADMINS:
+# 			bot.send_message(message.chat.id, 'Старый отчет:')
+# 			exel(message)
 
-			chat_id = message.chat.id
-			file_info = bot.get_file(message.document.file_id)
-			downloaded_file = bot.download_file(file_info.file_path)
+# 			chat_id = message.chat.id
+# 			file_info = bot.get_file(message.document.file_id)
+# 			downloaded_file = bot.download_file(file_info.file_path)
 
-			with open('work.xlsx', 'wb') as f:
-				f.write(downloaded_file)
+# 			with open('work.xlsx', 'wb') as f:
+# 				f.write(downloaded_file)
 
-			bot.send_message(message.chat.id, 'Все ок!')
-	except:
-		bot.send_message(message.chat.id, 'ОШИБКА!')
+# 			bot.send_message(message.chat.id, 'Все ок!')
+# 	except:
+# 		bot.send_message(message.chat.id, 'ОШИБКА!')
 @bot.message_handler(content_types=["location"])
 def location(message):
 	print(message)
@@ -75,7 +75,7 @@ def location(message):
 			if message.chat.id in temp.keys():
 				st = temp[message.chat.id]
 
-				if time() - st > 3:
+				if time() - st > 6:
 					bot.send_message(message.chat.id, 'Вы не успели')
 					temp.pop(message.chat.id)
 				else:	
