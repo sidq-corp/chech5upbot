@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Check-up</title>
+    </head>
+    <body>
+        <button onclick="sendGeo()">Отправить геопозицию</button>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            function sendGeo() {
+                console.log("1111");
+                axios
+                    .get("https://google.com")
+                    .then((res) => {
+                        console.log("ok");
+                    })
+                    .catch((err) => {
+                        console.log("error");
+                    });
+            }
+        </script>
+    </body>
+</html>

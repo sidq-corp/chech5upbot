@@ -165,22 +165,16 @@ def add_coords(name, lat1, long1):
 
 	else:
 		if time >= TIME[0] and time <= TIME[1]:
-			if add_to_base(lat1, long1) or (not randint(0, 4)):
+			good_add(name, 'green')
+		
 
-				return 'coord'
-			else:
-				good_add(name, 'green')
-			
-
-				return 'good'
+			return 'good'
 
 		elif time > TIME[1]:
-			if add_to_base(lat1, long1) or (not randint(0, 4)):
-				return 'coord'
-			else:
-				if good_add(name, 'red'):
-					
-					return 'green'
+
+			if good_add(name, 'red'):
+				
+				return 'green'
 
 			return 'errtime+'
 
